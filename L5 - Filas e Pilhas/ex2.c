@@ -4,8 +4,8 @@
 typedef struct elemento {
     int hora;
     int minuto;
-    int tempoTotal;
     int tempoRestante;
+    int chegada;
 } paciente;
 
 typedef struct fila {
@@ -58,13 +58,11 @@ int inserir(fila *fila, paciente elemento) {
 
 int remover(fila *fila) {
     int i;
-    paciente elementoResultado;
 
     if(fila->tamanho==0) {
         return 1; /*erro: fila vazia*/
 
     } else {
-        elementoResultado = fila->paciente[0];
         for(i=0; i<(fila->tamanho-1); i++) {
             fila->paciente[i] = fila->paciente[i+1];
         }
@@ -77,14 +75,14 @@ int remover(fila *fila) {
 int verificador(fila *fila) {
     int i;
     int cemiterio = 0;
-    int proximo = fila->paciente[0].hora*60 + fila->paciente[0].minuto + fila->paciente[0].tempoRestante;
+    int proximo = fila->paciente[0].hora*60 + fila->paciente[0].minuto;
 
     for(i=0; i<fila->tamanho; i++) {
-        fila->paciente[i].tempoTotal = fila->paciente[i].hora*60 + fila->paciente[i].minuto + fila->paciente[i].tempoRestante;
+        fila->paciente[i].chegada = (fila->paciente[i].hora)*60 + fila->paciente[i].minuto;
     }
 
     for(i=0; i<fila->tamanho; i++) {
-        if (fila->paciente[i].tempoTotal<=proximo) {
+        if (fila->paciente[i].chegada + fila->paciente[i].tempoRestante<proximo) {
             cemiterio++;
         }
 
@@ -92,6 +90,14 @@ int verificador(fila *fila) {
     }
 
     return cemiterio;
+}
+
+void imprimirFila(fila fila) {
+    int i;
+    printf("\n\n");
+    for(i=0; i<fila.tamanho; i++) {
+        printf("%d %d %d %d\n", fila.paciente[i].hora, fila.paciente[i].minuto, fila.paciente[i].tempoRestante, fila.paciente[i].chegada);
+    }
 }
 
 
@@ -118,6 +124,7 @@ int main() {
     }
 
     printf("%d\n", verificador(&pacientes));
+    //imprimirFila(pacientes);
 
     return 0;
 }
